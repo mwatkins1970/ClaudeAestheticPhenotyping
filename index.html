@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aesthetically Phenotyping the Claudes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600&family=Playfair+Display:wght@400;500;600&family=Montserrat:wght@400;500;600&family=DM+Sans:wght@400;500;600&family=Cormorant+Garamond:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Georgia', serif;
+    background: #1a1a1a;
+    color: #e0d8cc;
+    min-height: 100vh;
+  }
+
+  header {
+    text-align: center;
+    padding: 24px 20px 16px;
+    background: #111;
+    border-bottom: 1px solid #333;
+  }
+
+  header h1 {
+    font-size: 22px;
+    font-weight: 400;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #c8b89a;
+  }
+
+  header p {
+    font-size: 13px;
+    color: #888;
+    margin-top: 4px;
+    font-style: italic;
+  }
+
+  .controls {
+    text-align: center;
+    padding: 16px;
+    background: #151515;
+  }
+
+  .controls select {
+    font-family: 'Georgia', serif;
+    font-size: 16px;
+    padding: 8px 16px;
+    background: #222;
+    color: #c8b89a;
+    border: 1px solid #444;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .controls select:hover { border-color: #666; }
+
+  .shelf-section {
+    padding: 30px 24px 40px;
+    overflow-x: auto;
+  }
+
+  .shelf-container {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    padding: 0 8px;
+    min-height: 380px;
+  }
+
+  .shelf-board {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 14px;
+    background: linear-gradient(to bottom, #6a5a48, #4d3d2d);
+    border-radius: 2px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.5);
+  }
+
+  .shelf-board::after {
+    content: '';
+    position: absolute;
+    top: -4px;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(to bottom, #8a7a68, #6a5a48);
+    border-radius: 2px 2px 0 0;
+  }
+
+  .shelf-board::before {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 4px;
+    right: 4px;
+    height: 8px;
+    background: linear-gradient(to bottom, #3d3028, #2a201a);
+    border-radius: 0 0 3px 3px;
+  }
+
+  .spines {
+    display: flex;
+    align-items: flex-end;
+    gap: 1px;
+    padding-bottom: 14px;
+    z-index: 1;
+  }
+
+  .shelf-label-inline {
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: #555;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    padding: 0 6px;
+    align-self: center;
+    white-space: nowrap;
+    user-select: none;
+  }
+
+  .divider {
+    width: 60px;
+    flex-shrink: 0;
+  }
+
+  /* Spine base */
+  .spine {
+    cursor: pointer;
+    transition: transform 0.15s ease, filter 0.15s ease;
+    position: relative;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .spine:hover {
+    transform: translateY(-6px);
+    filter: brightness(1.15);
+    z-index: 10;
+  }
+
+  /* Vertical text on spines */
+  .spine-text {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    font-size: 7px;
+    line-height: 1.1;
+    color: rgba(0,0,0,0.55);
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-height: 90%;
+    padding: 4px 1px;
+    pointer-events: none;
+    user-select: none;
+    letter-spacing: 0.3px;
+  }
+
+  .spine-text.light-text {
+    color: rgba(255,255,255,0.5);
+  }
+
+  .spine-text .spine-author {
+    font-size: 6px;
+    opacity: 0.7;
+  }
+
+  /* Book spine textures via overlays */
+  .spine.texture-cloth::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.04) 2px,
+      rgba(0,0,0,0.04) 3px
+    );
+    pointer-events: none;
+    border-radius: 1px;
+  }
+
+  .spine.texture-leather::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 20% 50%, rgba(255,255,255,0.06) 0%, transparent 50%),
+      repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 1px,
+        rgba(0,0,0,0.03) 1px,
+        rgba(0,0,0,0.03) 2px
+      );
+    pointer-events: none;
+    border-radius: 1px;
+  }
+
+  .spine.texture-linen::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 3px,
+        rgba(0,0,0,0.03) 3px,
+        rgba(0,0,0,0.03) 4px
+      ),
+      repeating-linear-gradient(
+        90deg,
+        transparent,
+        transparent 3px,
+        rgba(0,0,0,0.03) 3px,
+        rgba(0,0,0,0.03) 4px
+      );
+    pointer-events: none;
+    border-radius: 1px;
+  }
+
+  .spine.texture-matte::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to right,
+      rgba(0,0,0,0.08) 0%,
+      rgba(0,0,0,0) 15%,
+      rgba(0,0,0,0) 85%,
+      rgba(0,0,0,0.12) 100%
+    );
+    pointer-events: none;
+    border-radius: 1px;
+  }
+
+  .spine.texture-glossy::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(
+        135deg,
+        rgba(255,255,255,0.12) 0%,
+        rgba(255,255,255,0.02) 40%,
+        rgba(0,0,0,0) 60%,
+        rgba(0,0,0,0.06) 100%
+      );
+    pointer-events: none;
+    border-radius: 1px;
+  }
+
+  /* Bookend styles — solid oak L-brackets */
+  .bookend {
+    flex-shrink: 0;
+    z-index: 2;
+    align-self: flex-end;
+    margin-bottom: 14px;
+  }
+
+  /* Info panel */
+  .info-panel {
+    position: fixed;
+    top: 100px;
+    right: 24px;
+    width: 380px;
+    background: #222;
+    border: 1px solid #444;
+    border-radius: 8px;
+    padding: 20px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    pointer-events: none;
+    z-index: 100;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+  }
+
+  .info-panel.visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .info-panel .info-close {
+    position: absolute;
+    top: 8px;
+    right: 12px;
+    font-size: 18px;
+    color: #666;
+    cursor: pointer;
+    background: none;
+    border: none;
+    font-family: inherit;
+    line-height: 1;
+  }
+  .info-panel .info-close:hover { color: #aaa; }
+
+  .info-panel .info-overlap {
+    font-size: 12px;
+    color: #888;
+    margin-top: 10px;
+    padding-top: 8px;
+    border-top: 1px solid #333;
+  }
+
+  /* Overlap dot */
+  .overlap-dot {
+    position: absolute;
+    top: 4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #c8b89a;
+    z-index: 5;
+    pointer-events: none;
+    opacity: 0.8;
+    box-shadow: 0 0 3px rgba(0,0,0,0.5);
+  }
+
+  .spine.pinned {
+    transform: translateY(-6px);
+    filter: brightness(1.15);
+    z-index: 10;
+  }
+
+  .info-panel .info-type {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #888;
+    margin-bottom: 8px;
+  }
+
+  .info-panel .info-title {
+    font-size: 18px;
+    color: #e0d8cc;
+    margin-bottom: 4px;
+    line-height: 1.3;
+  }
+
+  .info-panel .info-creator {
+    font-size: 14px;
+    color: #c8b89a;
+    margin-bottom: 4px;
+  }
+
+  .info-panel .info-year {
+    font-size: 13px;
+    color: #999;
+    margin-bottom: 12px;
+  }
+
+  .info-panel .info-description {
+    font-size: 13px;
+    color: #aaa;
+    line-height: 1.5;
+    font-style: italic;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Aesthetically Phenotyping the Claudes</h1>
+  <p>book, album and DVD collections for each of the models &nbsp;<a href="about.html" style="color:#777;font-size:12px;text-decoration:none;border:1px solid #444;padding:2px 8px;border-radius:3px;vertical-align:middle;font-style:normal;letter-spacing:0.5px;" onmouseover="this.style.color='#c8b89a';this.style.borderColor='#888'" onmouseout="this.style.color='#777';this.style.borderColor='#444'">about this project</a></p>
+</header>
+
+<div class="controls">
+  <select id="model-select"></select>
+</div>
+
+<div class="shelf-section">
+  <div class="shelf-container" id="shelf-container">
+    <div class="spines" id="all-spines"></div>
+    <div class="shelf-board"></div>
+  </div>
+</div>
+
+<div class="info-panel" id="info-panel">
+  <button class="info-close" id="info-close">&times;</button>
+  <div class="info-type" id="info-type"></div>
+  <div class="info-title" id="info-title"></div>
+  <div class="info-creator" id="info-creator"></div>
+  <div class="info-year" id="info-year"></div>
+  <div class="info-description" id="info-description"></div>
+  <div class="info-overlap" id="info-overlap"></div>
+</div>
+
+<script src="data.js"></script>
+<script>
+// === Constants ===
+const VINYL_HEIGHT = 330;
+const PX_PER_INCH = VINYL_HEIGHT / 12;
+const PAGES_TO_WIDTH = (pages) => Math.max(10, Math.round(pages * 0.003 * PX_PER_INCH * 1.1));
+const BOOK_HEIGHT_DEFAULT = Math.round(9.5 * PX_PER_INCH);
+const ALBUM_SPINE_WIDTH = Math.max(6, Math.round(0.3 * PX_PER_INCH));
+const TEXTURES = ['texture-cloth', 'texture-leather', 'texture-linen', 'texture-matte', 'texture-glossy'];
+
+const ERA_FONTS = [
+  { maxYear: 1900, family: "'EB Garamond', 'Georgia', serif", weight: 500 },
+  { maxYear: 1950, family: "'Playfair Display', 'Georgia', serif", weight: 500 },
+  { maxYear: 1980, family: "'Cormorant Garamond', 'Georgia', serif", weight: 500 },
+  { maxYear: 2000, family: "'Montserrat', 'Helvetica Neue', sans-serif", weight: 500 },
+  { maxYear: 9999, family: "'DM Sans', 'Helvetica Neue', sans-serif", weight: 500 },
+];
+
+// === Overlap index ===
+// For each media type, maps a normalised key to { count, models[], item }
+const overlapIndex = { book: {}, album: {}, dvd: {} };
+
+function normaliseKey(type, item) {
+  if (type === 'book') return (item.title + '||' + item.author).toLowerCase().trim();
+  if (type === 'album') return (item.title + '||' + item.artist).toLowerCase().trim();
+  return (item.title + '||' + (item.director || '')).toLowerCase().trim();
+}
+
+function buildOverlapIndex() {
+  const realModels = Object.keys(MODEL_DATA).filter(k => k !== 'consensus');
+  for (const modelKey of realModels) {
+    const data = MODEL_DATA[modelKey];
+    for (const [type, items] of [['book', data.books], ['album', data.albums], ['dvd', data.dvds || []]]) {
+      for (const item of items) {
+        const key = normaliseKey(type, item);
+        if (!overlapIndex[type][key]) {
+          overlapIndex[type][key] = { count: 0, models: [], item };
+        }
+        overlapIndex[type][key].count++;
+        overlapIndex[type][key].models.push(modelKey);
+      }
+    }
+  }
+}
+
+function getOverlap(type, item) {
+  const key = normaliseKey(type, item);
+  return overlapIndex[type][key] || { count: 1, models: [] };
+}
+
+// === Build consensus shelf ===
+function buildConsensusModel() {
+  const consensus = { books: [], albums: [], dvds: [] };
+  const threshold = 3;
+
+  for (const [type, propName] of [['book', 'books'], ['album', 'albums'], ['dvd', 'dvds']]) {
+    const entries = Object.values(overlapIndex[type])
+      .filter(e => e.count >= threshold)
+      .sort((a, b) => b.count - a.count);
+    for (const entry of entries) {
+      const item = { ...entry.item };
+      item.description = `Appears on ${entry.count}/6 shelves (${entry.models.join(', ')}).` +
+        (item.description ? ' ' + item.description : '');
+      consensus[propName].push(item);
+    }
+  }
+
+  MODEL_DATA['consensus'] = consensus;
+}
+
+// === Utility functions ===
+function hash(str) {
+  let h = 0;
+  for (let i = 0; i < str.length; i++) {
+    h = str.charCodeAt(i) + ((h << 5) - h);
+  }
+  return h;
+}
+
+function hashRange(str, min, max, seed) {
+  const h = hash(str + (seed || ''));
+  return min + (Math.abs(h) % (max - min + 1));
+}
+
+function hashColor(str, satRange, lightRange, seed) {
+  const h = hash(str + (seed || ''));
+  const hue = Math.abs(h) % 360;
+  const sat = satRange[0] + (Math.abs(h >> 8) % (satRange[1] - satRange[0]));
+  const light = lightRange[0] + (Math.abs(h >> 16) % (lightRange[1] - lightRange[0]));
+  return `hsl(${hue}, ${sat}%, ${light}%)`;
+}
+
+function getTexture(str) {
+  return TEXTURES[Math.abs(hash(str + 'tex')) % TEXTURES.length];
+}
+
+function getEraFont(yearStr) {
+  let year = parseInt(yearStr);
+  if (isNaN(year) || yearStr.includes('BCE')) year = 0;
+  for (const era of ERA_FONTS) {
+    if (year <= era.maxYear) return era;
+  }
+  return ERA_FONTS[ERA_FONTS.length - 1];
+}
+
+function isLightColor(hslStr) {
+  const match = hslStr.match(/hsl\((\d+),\s*(\d+)%,\s*(\d+)%\)/);
+  if (!match) return false;
+  return parseInt(match[3]) > 35;
+}
+
+function getBookHeight(book) {
+  const pages = book.pages || 250;
+  if (pages > 500) return Math.round(10 * PX_PER_INCH);
+  if (pages < 100) return Math.round(7.5 * PX_PER_INCH);
+  if (pages < 200) return Math.round(8.5 * PX_PER_INCH);
+  return Math.round((8.5 + (pages - 200) / 300 * 1.5) * PX_PER_INCH);
+}
+
+// === Overlap dot helper ===
+function addOverlapDot(el, type, item) {
+  const overlap = getOverlap(type, item);
+  if (overlap.count >= 2) {
+    const dot = document.createElement('div');
+    dot.className = 'overlap-dot';
+    // Brighter for higher overlap
+    const opacity = 0.5 + (overlap.count / 6) * 0.5;
+    dot.style.opacity = opacity;
+    el.appendChild(dot);
+  }
+}
+
+// === Click-to-pin info panel ===
+let pinnedSpine = null;
+
+function pinInfo(type, item, spineEl) {
+  // If clicking the same spine, unpin
+  if (pinnedSpine === spineEl) {
+    unpinInfo();
+    return;
+  }
+
+  // Unpin previous
+  if (pinnedSpine) pinnedSpine.classList.remove('pinned');
+
+  pinnedSpine = spineEl;
+  spineEl.classList.add('pinned');
+  showInfo(type, item);
+}
+
+function unpinInfo() {
+  if (pinnedSpine) pinnedSpine.classList.remove('pinned');
+  pinnedSpine = null;
+  hideInfo();
+}
+
+// === Spine creation ===
+function createBookSpine(book) {
+  const el = document.createElement('div');
+  el.className = 'spine';
+
+  const pages = book.pages || 250;
+  const width = PAGES_TO_WIDTH(pages);
+  const height = getBookHeight(book);
+
+  const baseColor = hashColor(book.title + book.author, [20, 50], [18, 42], 'base');
+  const edgeColor = hashColor(book.author + book.title, [15, 45], [12, 32], 'edge');
+
+  const texture = getTexture(book.title);
+  el.classList.add(texture);
+
+  el.style.width = width + 'px';
+  el.style.height = height + 'px';
+  el.style.background = `linear-gradient(to right, ${edgeColor} 0%, ${baseColor} 15%, ${baseColor} 85%, ${edgeColor} 100%)`;
+  el.style.borderRadius = '2px 1px 1px 2px';
+  el.style.boxShadow = `inset -2px 0 4px rgba(0,0,0,0.25), inset 2px 0 4px rgba(255,255,255,0.04), 1px 0 2px rgba(0,0,0,0.2)`;
+
+  if (width >= 14) {
+    const textEl = document.createElement('div');
+    textEl.className = 'spine-text';
+    if (!isLightColor(baseColor)) textEl.classList.add('light-text');
+
+    const era = getEraFont(book.year || '1960');
+    textEl.style.fontFamily = era.family;
+    textEl.style.fontWeight = era.weight;
+
+    const titleSpan = document.createElement('span');
+    titleSpan.textContent = book.title;
+    const sepSpan = document.createElement('span');
+    sepSpan.textContent = '  ';
+    sepSpan.style.opacity = '0.4';
+    const authorSpan = document.createElement('span');
+    authorSpan.className = 'spine-author';
+    authorSpan.textContent = book.author;
+
+    textEl.appendChild(titleSpan);
+    textEl.appendChild(sepSpan);
+    textEl.appendChild(authorSpan);
+
+    if (width < 20) textEl.style.fontSize = '6px';
+    else if (width >= 30) textEl.style.fontSize = '8px';
+
+    el.appendChild(textEl);
+  }
+
+  const topBand = document.createElement('div');
+  topBand.style.cssText = `position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(to bottom,rgba(255,255,255,0.06),transparent);border-radius:2px 1px 0 0;pointer-events:none;`;
+  el.appendChild(topBand);
+
+  addOverlapDot(el, 'book', book);
+
+  el.addEventListener('click', (e) => { e.stopPropagation(); pinInfo('book', book, el); });
+  el.addEventListener('mouseenter', () => { if (!pinnedSpine) showInfo('book', book); });
+  el.addEventListener('mouseleave', () => { if (!pinnedSpine) hideInfo(); });
+  return el;
+}
+
+function createAlbumSpine(album) {
+  const el = document.createElement('div');
+  el.className = 'spine';
+
+  const width = ALBUM_SPINE_WIDTH;
+  const height = VINYL_HEIGHT;
+
+  const baseColor = hashColor(album.title + album.artist, [30, 65], [22, 48], 'alb');
+  const edgeColor = hashColor(album.artist, [25, 55], [16, 36], 'albe');
+
+  el.style.width = width + 'px';
+  el.style.height = height + 'px';
+  el.style.background = `linear-gradient(to right, ${edgeColor}, ${baseColor} 30%, ${baseColor} 70%, ${edgeColor})`;
+  el.style.borderRadius = '1px';
+  el.style.boxShadow = `inset -1px 0 2px rgba(0,0,0,0.3), inset 1px 0 2px rgba(255,255,255,0.04), 0.5px 0 1px rgba(0,0,0,0.15)`;
+
+  const textEl = document.createElement('div');
+  textEl.className = 'spine-text';
+  if (!isLightColor(baseColor)) textEl.classList.add('light-text');
+  textEl.style.fontSize = '5px';
+  textEl.style.fontFamily = "'DM Sans', sans-serif";
+  textEl.style.letterSpacing = '0.2px';
+
+  const artistSpan = document.createElement('span');
+  artistSpan.textContent = album.artist;
+  const sepSpan = document.createElement('span');
+  sepSpan.textContent = '  ';
+  sepSpan.style.opacity = '0.3';
+  const titleSpan = document.createElement('span');
+  titleSpan.className = 'spine-author';
+  titleSpan.textContent = album.title;
+
+  textEl.appendChild(artistSpan);
+  textEl.appendChild(sepSpan);
+  textEl.appendChild(titleSpan);
+  el.appendChild(textEl);
+
+  const gloss = document.createElement('div');
+  gloss.style.cssText = `position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,0.07) 0%,transparent 40%,transparent 60%,rgba(0,0,0,0.05) 100%);pointer-events:none;border-radius:1px;`;
+  el.appendChild(gloss);
+
+  addOverlapDot(el, 'album', album);
+
+  el.addEventListener('click', (e) => { e.stopPropagation(); pinInfo('album', album, el); });
+  el.addEventListener('mouseenter', () => { if (!pinnedSpine) showInfo('album', album); });
+  el.addEventListener('mouseleave', () => { if (!pinnedSpine) hideInfo(); });
+  return el;
+}
+
+// DVD spine dimensions: standard DVD case ~7.5" tall, ~0.55" wide
+const DVD_HEIGHT = Math.round(7.5 * PX_PER_INCH);
+const DVD_SPINE_WIDTH = Math.round(0.55 * PX_PER_INCH);
+
+// DVD font pool — DVDs use a wide variety of typefaces
+const DVD_FONT_POOL = [
+  { family: "'DM Sans', sans-serif", weight: 700, spacing: '0.5px' },
+  { family: "'Montserrat', sans-serif", weight: 600, spacing: '1px' },
+  { family: "'Montserrat', sans-serif", weight: 700, spacing: '0.3px' },
+  { family: "'EB Garamond', serif", weight: 600, spacing: '0.4px' },
+  { family: "'Playfair Display', serif", weight: 600, spacing: '0.2px' },
+  { family: "'Cormorant Garamond', serif", weight: 600, spacing: '0.5px' },
+  { family: "'DM Sans', sans-serif", weight: 500, spacing: '1.5px' },
+  { family: "'Montserrat', sans-serif", weight: 500, spacing: '2px' },
+];
+
+// DVD color schemes — modeled on real DVD spine aesthetics
+// Real collections are heavy on white, black, dark blue, with occasional bold color
+const DVD_COLOR_SCHEMES = [
+  // White/cream spines (very common — Criterion, studio releases)
+  { bg: '#e8e4dc', text: '#222', accent: '#444' },
+  { bg: '#f0ece4', text: '#111', accent: '#888' },
+  { bg: '#ddd8ce', text: '#333', accent: '#666' },
+  { bg: '#e2ddd3', text: '#1a1a1a', accent: '#999' },
+  // Black spines (very common — horror, thriller, prestige)
+  { bg: '#1a1a1a', text: '#ccc', accent: '#888' },
+  { bg: '#222', text: '#e0e0e0', accent: '#666' },
+  { bg: '#111', text: '#aaa', accent: '#555' },
+  { bg: '#2a2a2a', text: '#ddd', accent: '#777' },
+  // Dark navy/blue (common for dramas, classics)
+  { bg: '#1a2233', text: '#c0cce0', accent: '#4a6080' },
+  { bg: '#0d1926', text: '#8aa4c4', accent: '#3a5070' },
+  { bg: '#1e2d44', text: '#b0c0d8', accent: '#5a7090' },
+  // Deep burgundy/wine (prestige, period films)
+  { bg: '#2a0e12', text: '#d4a0a8', accent: '#7a3040' },
+  { bg: '#331118', text: '#c89098', accent: '#884050' },
+  // Forest/dark green (nature, indie)
+  { bg: '#0e1f12', text: '#90b898', accent: '#3a6040' },
+  { bg: '#142418', text: '#a0c0a8', accent: '#4a7050' },
+  // Warm amber/brown (westerns, historical)
+  { bg: '#2a1f0e', text: '#d4b880', accent: '#8a6830' },
+  // Steel grey
+  { bg: '#2a2c2e', text: '#b0b4b8', accent: '#606468' },
+  { bg: '#363839', text: '#c8ccd0', accent: '#707478' },
+  // Occasional bold colors (studio branding, animation, comedy)
+  { bg: '#c41e2a', text: '#fff', accent: '#880000' },   // red
+  { bg: '#0050a0', text: '#e0eeff', accent: '#003060' }, // blue
+  { bg: '#e88c00', text: '#fff', accent: '#a06000' },    // orange
+];
+
+function getDvdScheme(str) {
+  return DVD_COLOR_SCHEMES[Math.abs(hash(str + 'dvdclr')) % DVD_COLOR_SCHEMES.length];
+}
+
+function getDvdFont(str) {
+  return DVD_FONT_POOL[Math.abs(hash(str + 'dvdfnt')) % DVD_FONT_POOL.length];
+}
+
+function createDvdSpine(dvd) {
+  const el = document.createElement('div');
+  el.className = 'spine';
+
+  const width = DVD_SPINE_WIDTH;
+  const height = DVD_HEIGHT;
+
+  // Pick a color scheme from the realistic palette
+  const scheme = getDvdScheme(dvd.title);
+  const bg = scheme.bg;
+  const accent = scheme.accent;
+
+  // Subtle edge darkening for plastic case look
+  el.style.width = width + 'px';
+  el.style.height = height + 'px';
+  el.style.background = `linear-gradient(to right, ${accent} 0%, ${bg} 12%, ${bg} 88%, ${accent} 100%)`;
+  el.style.borderRadius = '1px';
+  el.style.boxShadow = `inset -1px 0 3px rgba(0,0,0,0.25), inset 1px 0 3px rgba(255,255,255,0.04), 0.5px 0 1px rgba(0,0,0,0.15)`;
+
+  // Some DVDs have a thin colored band at top or bottom (studio branding)
+  const h = hash(dvd.title + 'band');
+  const hasBand = (Math.abs(h) % 3) === 0; // ~1/3 of DVDs
+  if (hasBand) {
+    const bandColor = hashColor(dvd.title, [50, 80], [35, 55], 'band');
+    const bandPos = (Math.abs(h >> 4) % 2) === 0 ? 'top' : 'bottom';
+    const band = document.createElement('div');
+    band.style.cssText = `position:absolute;${bandPos}:0;left:0;right:0;height:${Math.round(height * 0.06)}px;background:${bandColor};pointer-events:none;border-radius:1px;`;
+    el.appendChild(band);
+  }
+
+  // Vertical text — pick font from diverse pool
+  const textEl = document.createElement('div');
+  textEl.className = 'spine-text';
+  textEl.style.color = scheme.text;
+
+  const font = getDvdFont(dvd.title + (dvd.director || ''));
+  textEl.style.fontFamily = font.family;
+  textEl.style.fontWeight = font.weight;
+  textEl.style.fontSize = '7px';
+  textEl.style.letterSpacing = font.spacing;
+
+  // Some DVD titles are ALL CAPS
+  const useUppercase = (Math.abs(hash(dvd.title + 'caps')) % 3) !== 0; // ~2/3 uppercase
+  const titleSpan = document.createElement('span');
+  titleSpan.textContent = useUppercase ? dvd.title.toUpperCase() : dvd.title;
+  if (useUppercase) {
+    textEl.style.fontSize = '6px';
+    textEl.style.letterSpacing = '1px';
+  }
+
+  textEl.appendChild(titleSpan);
+  el.appendChild(textEl);
+
+  // Glossy plastic sheen — stronger than books
+  const gloss = document.createElement('div');
+  gloss.style.cssText = `position:absolute;inset:0;background:linear-gradient(105deg,rgba(255,255,255,0.18) 0%,rgba(255,255,255,0.04) 30%,transparent 50%,rgba(0,0,0,0.04) 80%,rgba(0,0,0,0.08) 100%);pointer-events:none;border-radius:1px;`;
+  el.appendChild(gloss);
+
+  addOverlapDot(el, 'dvd', dvd);
+
+  el.addEventListener('click', (e) => { e.stopPropagation(); pinInfo('dvd', dvd, el); });
+  el.addEventListener('mouseenter', () => { if (!pinnedSpine) showInfo('dvd', dvd); });
+  el.addEventListener('mouseleave', () => { if (!pinnedSpine) hideInfo(); });
+  return el;
+}
+
+// === Info panel ===
+function showInfo(type, item) {
+  const panel = document.getElementById('info-panel');
+  const typeLabels = { book: 'BOOK', album: 'ALBUM', dvd: 'DVD' };
+  document.getElementById('info-type').textContent = typeLabels[type] || type.toUpperCase();
+  document.getElementById('info-title').textContent = item.title;
+
+  const creator = type === 'book' ? item.author : type === 'album' ? item.artist : item.director;
+  document.getElementById('info-creator').textContent = creator || '';
+
+  const yearStr = item.year || '';
+  const yearVerb = type === 'book' ? 'Published' : 'Released';
+  document.getElementById('info-year').textContent = yearStr ? `${yearVerb} ${yearStr}` : '';
+
+  document.getElementById('info-description').textContent = item.description || '';
+
+  // Overlap info
+  const overlap = getOverlap(type, item);
+  const overlapEl = document.getElementById('info-overlap');
+  if (overlap.count >= 2) {
+    overlapEl.textContent = `Also on: ${overlap.models.filter(m => m !== currentModel).join(', ') || 'this shelf only'}`;
+    overlapEl.style.display = '';
+  } else {
+    overlapEl.style.display = 'none';
+  }
+
+  panel.classList.add('visible');
+}
+
+function hideInfo() {
+  if (pinnedSpine) return; // don't hide if pinned
+  document.getElementById('info-panel').classList.remove('visible');
+}
+
+// Close button and click-away
+document.getElementById('info-close').addEventListener('click', unpinInfo);
+document.addEventListener('click', (e) => {
+  if (pinnedSpine && !e.target.closest('.spine') && !e.target.closest('.info-panel')) {
+    unpinInfo();
+  }
+});
+
+// === Render ===
+let currentModel = '';
+
+function renderModel(modelKey) {
+  const data = MODEL_DATA[modelKey];
+  if (!data) return;
+
+  currentModel = modelKey;
+  unpinInfo();
+
+  const container = document.getElementById('all-spines');
+  container.innerHTML = '';
+
+  // Books
+  (data.books || []).forEach((book) => {
+    container.appendChild(createBookSpine(book));
+  });
+
+  // Spacer between books and albums
+  if ((data.books || []).length && (data.albums || []).length) {
+    const spacer1 = document.createElement('div');
+    spacer1.className = 'divider';
+    container.appendChild(spacer1);
+  }
+
+  // Albums
+  (data.albums || []).forEach((album) => {
+    container.appendChild(createAlbumSpine(album));
+  });
+
+  // DVDs
+  if (data.dvds && data.dvds.length > 0) {
+    const spacer2 = document.createElement('div');
+    spacer2.className = 'divider';
+    container.appendChild(spacer2);
+
+    data.dvds.forEach((dvd) => {
+      container.appendChild(createDvdSpine(dvd));
+    });
+  }
+}
+
+// === Initialize ===
+buildOverlapIndex();
+buildConsensusModel();
+
+const select = document.getElementById('model-select');
+// Real models first (sorted), then consensus
+const realModelKeys = Object.keys(MODEL_DATA).filter(k => k !== 'consensus').sort();
+const modelKeys = [...realModelKeys, 'consensus'];
+
+modelKeys.forEach(key => {
+  const opt = document.createElement('option');
+  opt.value = key;
+  opt.textContent = key === 'consensus' ? '\u2728 consensus (shared across 3+ models)' : key;
+  select.appendChild(opt);
+});
+
+select.addEventListener('change', (e) => renderModel(e.target.value));
+
+if (modelKeys.length > 0) {
+  renderModel(modelKeys[0]);
+}
+</script>
+</body>
+</html>

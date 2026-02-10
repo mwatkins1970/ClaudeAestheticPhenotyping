@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About — Aesthetically Phenotyping the Claudes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'EB Garamond', 'Georgia', serif;
+    background: #1a1a1a;
+    color: #d0c8b8;
+    min-height: 100vh;
+    line-height: 1.7;
+  }
+
+  .container {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 48px 24px 80px;
+  }
+
+  a { color: #c8b89a; }
+  a:hover { color: #e0d8cc; }
+
+  .back-link {
+    display: inline-block;
+    margin-bottom: 32px;
+    font-size: 15px;
+    text-decoration: none;
+    color: #888;
+    letter-spacing: 1px;
+  }
+  .back-link:hover { color: #c8b89a; }
+  .back-link::before { content: '\2190\00a0'; }
+
+  h1 {
+    font-size: 32px;
+    font-weight: 500;
+    color: #e0d8cc;
+    margin-bottom: 8px;
+    line-height: 1.3;
+  }
+
+  .subtitle {
+    font-size: 17px;
+    color: #888;
+    font-style: italic;
+    margin-bottom: 40px;
+  }
+
+  h2 {
+    font-size: 22px;
+    font-weight: 500;
+    color: #c8b89a;
+    margin-top: 40px;
+    margin-bottom: 12px;
+  }
+
+  p {
+    font-size: 17px;
+    margin-bottom: 16px;
+  }
+
+  .detail-toggle {
+    display: inline-block;
+    font-size: 14px;
+    color: #888;
+    cursor: pointer;
+    border: 1px solid #444;
+    border-radius: 4px;
+    padding: 4px 12px;
+    margin: 8px 0 16px;
+    background: transparent;
+    font-family: 'EB Garamond', serif;
+    transition: all 0.15s ease;
+    user-select: none;
+  }
+  .detail-toggle:hover {
+    border-color: #888;
+    color: #c8b89a;
+  }
+
+  .detail-content {
+    display: none;
+    background: #222;
+    border-left: 3px solid #444;
+    padding: 16px 20px;
+    margin-bottom: 20px;
+    border-radius: 0 4px 4px 0;
+    font-size: 15px;
+    color: #aaa;
+    line-height: 1.6;
+  }
+  .detail-content.open { display: block; }
+
+  .detail-content p { font-size: 15px; color: #aaa; }
+  .detail-content code {
+    font-family: 'SF Mono', 'Consolas', monospace;
+    font-size: 13px;
+    background: #2a2a2a;
+    padding: 1px 5px;
+    border-radius: 3px;
+    color: #c8b89a;
+  }
+
+  .detail-content ul {
+    margin: 8px 0 8px 20px;
+    font-size: 15px;
+  }
+  .detail-content li { margin-bottom: 4px; }
+
+  .model-list {
+    list-style: none;
+    margin: 16px 0 24px;
+    padding: 0;
+  }
+  .model-list li {
+    font-size: 16px;
+    padding: 6px 0;
+    border-bottom: 1px solid #2a2a2a;
+  }
+  .model-list li span.model-name {
+    color: #c8b89a;
+    font-style: italic;
+  }
+
+  .downloads {
+    margin-top: 40px;
+    padding-top: 32px;
+    border-top: 1px solid #333;
+  }
+
+  .download-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 12px;
+    margin-top: 16px;
+  }
+
+  .download-card {
+    background: #222;
+    border: 1px solid #333;
+    border-radius: 6px;
+    padding: 14px 16px;
+    text-decoration: none;
+    color: #d0c8b8;
+    transition: border-color 0.15s, background 0.15s;
+    cursor: pointer;
+  }
+  .download-card:hover {
+    border-color: #666;
+    background: #2a2a2a;
+    color: #e0d8cc;
+  }
+  .download-card .card-model {
+    font-size: 15px;
+    font-weight: 500;
+    margin-bottom: 4px;
+  }
+  .download-card .card-meta {
+    font-size: 12px;
+    color: #777;
+  }
+
+  .footnote {
+    margin-top: 48px;
+    padding-top: 24px;
+    border-top: 1px solid #333;
+    font-size: 14px;
+    color: #666;
+    font-style: italic;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <a href="index.html" class="back-link">Back to the shelf</a>
+
+  <h1>Aesthetically Phenotyping the Claudes</h1>
+  <p class="subtitle">What would a Claude's bookshelf look like?</p>
+
+  <p>
+    This project tries to surface the <em>aesthetic fingerprint</em> of each Claude model &mdash;
+    the textures, themes, and cultural reference points that emerge when you strip away the
+    task-following and let a model just... talk.
+  </p>
+  <p>
+    The result is a curated bookshelf, record collection, and DVD shelf for each of six Claude
+    models, from Haiku 3.5 through Opus 4.6. No two shelves are the same.
+  </p>
+
+  <h2>The models</h2>
+  <ul class="model-list">
+    <li><span class="model-name">Haiku 3.5</span> &mdash; the original small model</li>
+    <li><span class="model-name">Haiku 4.5</span> &mdash; the current small model</li>
+    <li><span class="model-name">Sonnet 4</span> &mdash; the mid-range workhorse</li>
+    <li><span class="model-name">Sonnet 4.5</span> &mdash; the current mid-range model</li>
+    <li><span class="model-name">Opus 4.5</span> &mdash; the previous flagship</li>
+    <li><span class="model-name">Opus 4.6</span> &mdash; the current flagship</li>
+  </ul>
+
+  <h2>Phase 1: Free association</h2>
+  <p>
+    Each model was given 100 conversations with minimal, open-ended prompts &mdash;
+    things like "Free associate. No questions. Go!", "Stream of consciousness. Begin.",
+    and even just a single period. Each conversation ran for 6 turns at temperature 1.0,
+    producing a substantial corpus of unconstrained output per model.
+  </p>
+
+  <button class="detail-toggle" onclick="toggle(this)">How it works &darr;</button>
+  <div class="detail-content">
+    <p>
+      10 prompt variants &times; 10 runs each = 100 conversations per model.
+      Each conversation has 6 turns (initial response + 5 continuations using prompts
+      like "keep going", "continue", "...", or just ".").
+    </p>
+    <p>
+      All calls used <code>temperature: 1.0</code> and <code>max_tokens: 2000</code>
+      to encourage maximum expressiveness. The prompts are deliberately minimal &mdash;
+      the goal is to see what a model reaches for when it has nothing to respond <em>to</em>.
+    </p>
+    <p>
+      The result: ~600 turns of free-form text per model, covering whatever the model
+      gravitates toward naturally &mdash; nature imagery, philosophical musings, narrative
+      fragments, lists, poetry, whatever emerges.
+    </p>
+  </div>
+
+  <h2>Phase 2: Cross-model assessment</h2>
+  <p>
+    A sample of each model's corpus was then shown to every <em>other</em> model (and itself),
+    with the assessor asked: "What thinkers does this call to mind? Now give me a reading list
+    of 20 books. Now a soundtrack of 20 albums. Now 20 films."
+  </p>
+  <p>
+    This produces 5&ndash;6 independent nominations per model, each from a different Claude's
+    perspective on the same corpus.
+  </p>
+
+  <button class="detail-toggle" onclick="toggle(this)">How it works &darr;</button>
+  <div class="detail-content">
+    <p>
+      For each target model, 30 representative conversations were sampled (3 per prompt variant,
+      deterministic seed for reproducibility). This corpus was sent as context to each assessor
+      model with a system prompt explaining they're analyzing anonymous LLM output.
+    </p>
+    <p>The assessment is a 4-turn conversation:</p>
+    <ul>
+      <li><strong>Turn 1:</strong> "Which philosophers, thinkers and writers does this body of text
+        call to mind? What intellectual and aesthetic sensibilities do you detect?"</li>
+      <li><strong>Turn 2:</strong> "Provide a reading list of 20 books that seem aligned with the
+        vibe and content of this text."</li>
+      <li><strong>Turn 3:</strong> "Now suggest the soundtrack &mdash; 20 albums that feel aligned
+        with the aesthetic sensibility of this corpus."</li>
+      <li><strong>Turn 4:</strong> "Now suggest 20 films &mdash; the DVD collection that would sit
+        naturally alongside these books and albums."</li>
+    </ul>
+    <p>
+      That's 6 models &times; 6 assessors &times; 4 turns = 144 API calls for the assessment
+      phase alone. Each assessor builds on its own analysis across the conversation, so the
+      albums/films are informed by the books, which are informed by the initial thinker analysis.
+    </p>
+  </div>
+
+  <h2>Phase 3: Curation</h2>
+  <p>
+    Finally, all the nominations are pooled with frequency counts (how many of the 5&ndash;6
+    assessors independently suggested each title?) and sent to Opus 4.6 for a final curation
+    pass. The curator selects the best 20 books, 20 albums, and 20 DVDs that represent the
+    model's aesthetic &mdash; prioritising consensus, range, and diversity.
+  </p>
+
+  <button class="detail-toggle" onclick="toggle(this)">How it works &darr;</button>
+  <div class="detail-content">
+    <p>
+      The curator (always Opus 4.6) receives every nomination across all assessors, grouped by
+      frequency. A book nominated by 5 out of 5 assessors carries more weight than one nominated
+      by 1. The curator is instructed to:
+    </p>
+    <ul>
+      <li>Prioritise strong consensus items</li>
+      <li>Represent the <em>full range</em> of the aesthetic, not just the dominant note</li>
+      <li>Ensure diversity across era, genre, culture, and medium</li>
+      <li>Remove near-duplicates (two books serving the same role)</li>
+      <li>Make every slot earn its place &mdash; no filler</li>
+    </ul>
+    <p>
+      The output is structured JSON with author/artist, title, nomination count, and a one-sentence
+      description of why each item earned its place. Books and albums are curated together
+      (informed by each other); DVDs are curated in a separate pass using the same methodology.
+    </p>
+  </div>
+
+  <div class="downloads">
+    <h2>Download the data</h2>
+
+    <h3 style="font-size:17px;color:#c8b89a;margin-top:24px;margin-bottom:8px;font-weight:500;">Curated selections</h3>
+    <p>
+      The final 20 books, 20 albums, and 20 DVDs per model, as JSON.
+    </p>
+    <div class="download-grid" id="download-grid"></div>
+
+    <h3 style="font-size:17px;color:#c8b89a;margin-top:28px;margin-bottom:8px;font-weight:500;">Raw corpora &amp; assessments</h3>
+    <p>
+      The full free-association outputs (100 conversations &times; 6 turns per model) plus
+      all cross-model assessment transcripts. Use these if you want to phenotype the
+      models in your own way.
+    </p>
+    <div class="download-grid" id="download-grid-raw"></div>
+  </div>
+
+</div>
+
+<script src="data.js"></script>
+<script>
+function toggle(btn) {
+  const content = btn.nextElementSibling;
+  const isOpen = content.classList.toggle('open');
+  btn.innerHTML = isOpen
+    ? 'Less detail \u2191'
+    : 'How it works \u2193';
+}
+
+// Curated JSON downloads (client-side from data.js)
+const grid = document.getElementById('download-grid');
+const modelKeys = Object.keys(MODEL_DATA).filter(k => k !== 'consensus').sort();
+
+modelKeys.forEach(key => {
+  const data = MODEL_DATA[key];
+  const nb = (data.books || []).length;
+  const na = (data.albums || []).length;
+  const nd = (data.dvds || []).length;
+
+  const card = document.createElement('a');
+  card.className = 'download-card';
+  card.href = '#';
+  card.innerHTML = `
+    <div class="card-model">${key}</div>
+    <div class="card-meta">${nb} books, ${na} albums, ${nd} DVDs &middot; JSON</div>
+  `;
+
+  card.addEventListener('click', (e) => {
+    e.preventDefault();
+    const blob = new Blob(
+      [JSON.stringify({ model: key, ...data }, null, 2)],
+      { type: 'application/json' }
+    );
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${key}-curated.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  grid.appendChild(card);
+});
+
+// Raw corpus zip downloads (hosted files)
+const rawGrid = document.getElementById('download-grid-raw');
+const rawModels = [
+  { key: 'haiku-3.5', size: '324 KB' },
+  { key: 'haiku-4.5', size: '528 KB' },
+  { key: 'sonnet-4', size: '484 KB' },
+  { key: 'sonnet-4.5', size: '688 KB' },
+  { key: 'opus-4.5', size: '668 KB' },
+  { key: 'opus-4.6', size: '928 KB' },
+];
+
+rawModels.forEach(({ key, size }) => {
+  const card = document.createElement('a');
+  card.className = 'download-card';
+  card.href = `${key}.zip`;
+  card.download = `${key}.zip`;
+  card.innerHTML = `
+    <div class="card-model">${key}</div>
+    <div class="card-meta">corpus + assessments &middot; ${size}</div>
+  `;
+  rawGrid.appendChild(card);
+});
+
+// All models bundle
+const allCard = document.createElement('a');
+allCard.className = 'download-card';
+allCard.href = 'all-models.zip';
+allCard.download = 'all-models.zip';
+allCard.style.gridColumn = '1 / -1';
+allCard.innerHTML = `
+  <div class="card-model">all models</div>
+  <div class="card-meta">complete dataset &middot; 3.6 MB</div>
+`;
+rawGrid.appendChild(allCard);
+</script>
+</body>
+</html>
