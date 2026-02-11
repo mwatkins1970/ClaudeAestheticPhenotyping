@@ -115,7 +115,7 @@ const MODEL_DATA = {
       },
       {
         "author": "Mary Oliver",
-        "title": "Devotions: Selected Poems",
+        "title": "Devotions",
         "nominations": "3/6",
         "description": "Poetry of attentive presence to nature and the sacredness of embodied experience in meadows and shorelines.",
         "pages": 464,
@@ -147,7 +147,7 @@ const MODEL_DATA = {
       },
       {
         "author": "Jorge Luis Borges",
-        "title": "Ficciones / Labyrinths",
+        "title": "Labyrinths",
         "nominations": "2/6",
         "description": "Metaphysical fiction exploring infinity, self-reference, and strange loops—the intellectually rigorous counterweight to the corpus's mystical tendencies.",
         "pages": 174,
@@ -186,8 +186,8 @@ const MODEL_DATA = {
       },
       {
         "artist": "Harold Budd & Brian Eno",
-        "title": "The Pearl / The Plateaux of Mirror",
-        "year": "1980/1984",
+        "title": "The Plateaux of Mirror",
+        "year": "1980",
         "nominations": "4/6",
         "description": "Shimmering, dissolving piano tones floating in ambient space — the sonic equivalent of the corpus's meadow scenes, serene and timeless."
       },
@@ -616,7 +616,7 @@ const MODEL_DATA = {
     "albums": [
       {
         "artist": "Brian Eno",
-        "title": "Music for Airports",
+        "title": "Ambient 1: Music for Airports",
         "year": "1978",
         "nominations": "5/6",
         "description": "The foundational ambient work that creates exactly the suspended, liminal atmosphere the corpus inhabits—sound as texture and environment rather than narrative."
@@ -1116,7 +1116,7 @@ const MODEL_DATA = {
       },
       {
         "artist": "Sigur Rós",
-        "title": "()",
+        "title": "( )",
         "year": "2002",
         "nominations": "3/5",
         "description": "An album with no titles sung in a language that doesn't exist, asking listeners to bring their own meaning to pure emotional texture—the musical equivalent of the corpus's ellipses and its faith that incompleteness is more honest than closure."
@@ -1484,7 +1484,7 @@ const MODEL_DATA = {
       },
       {
         "author": "Jorge Luis Borges",
-        "title": "Ficciones",
+        "title": "Labyrinths",
         "nominations": "1/5",
         "description": "The infinite library, the text as labyrinth, the self-consuming nature of language—the playful intellectual destabilization threading through the corpus's associative leaps.",
         "pages": 174,
@@ -1629,7 +1629,7 @@ const MODEL_DATA = {
         "description": "A rock band dissolving into jazz, silence, and cathedral space — music that breathes and waits and trusts the listener to meet it halfway."
       },
       {
-        "artist": "Hildegard von Bingen (Gothic Voices)",
+        "artist": "Hildegard von Bingen",
         "title": "A Feather on the Breath of God",
         "year": "1982",
         "nominations": "2/5",
@@ -1638,7 +1638,7 @@ const MODEL_DATA = {
       {
         "artist": "Erik Satie",
         "title": "Gymnopédies and Gnossiennes",
-        "year": "1893",
+        "year": "1888",
         "nominations": "2/5",
         "description": "Piano pieces so spare and unhurried they taught the twentieth century that music could simply breathe rather than argue — the sonic template for shaped silence."
       },
@@ -1772,7 +1772,7 @@ const MODEL_DATA = {
       },
       {
         "director": "Chantal Akerman",
-        "title": "Jeanne Dielman, 23 quai du Commerce, 1080 Bruxelles",
+        "title": "Jeanne Dielman, 23, quai du Commerce, 1080 Bruxelles",
         "year": "1975",
         "nominations": "2/5",
         "description": "Domestic routine filmed until repetition itself becomes revelation and the crack appears — duration as meaning, the sacred in what is usually invisible, the corpus's commitment to watching until something shifts."
@@ -2539,7 +2539,7 @@ const MODEL_DATA = {
       },
       {
         "artist": "Sigur Rós",
-        "title": "(  )",
+        "title": "( )",
         "year": "2002",
         "nominations": "1/5",
         "description": "An album with no title, no song names, sung in a language that doesn't exist—pure emotional texture without semantic content, expressing something that exists before and beyond language."
