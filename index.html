@@ -314,7 +314,7 @@
     border-top: 1px solid #333;
   }
 
-  /* Overlap dot */
+  /* Uniqueness dot — marks items found only on this model's shelf */
   .overlap-dot {
     position: absolute;
     top: 4px;
@@ -452,15 +452,16 @@ function getOverlap(type, item) {
 // === Build consensus shelf ===
 function buildConsensusModel() {
   const consensus = { books: [], albums: [], dvds: [] };
-  const threshold = 3;
+  const realModels = Object.keys(MODEL_DATA).filter(k => k !== 'consensus');
+  const totalModels = realModels.length;
 
   for (const [type, propName] of [['book', 'books'], ['album', 'albums'], ['dvd', 'dvds']]) {
     const entries = Object.values(overlapIndex[type])
-      .filter(e => e.count >= threshold)
+      .filter(e => e.count >= totalModels)
       .sort((a, b) => b.count - a.count);
     for (const entry of entries) {
       const item = { ...entry.item };
-      item.description = `Appears on ${entry.count}/6 shelves (${entry.models.join(', ')}).` +
+      item.description = `Appears on all ${totalModels} shelves.` +
         (item.description ? ' ' + item.description : '');
       consensus[propName].push(item);
     }
@@ -518,15 +519,12 @@ function getBookHeight(book) {
   return Math.round((8.5 + (pages - 200) / 300 * 1.5) * PX_PER_INCH);
 }
 
-// === Overlap dot helper ===
-function addOverlapDot(el, type, item) {
+// === Uniqueness dot helper ===
+function addUniqueDot(el, type, item) {
   const overlap = getOverlap(type, item);
-  if (overlap.count >= 2) {
+  if (overlap.count === 1) {
     const dot = document.createElement('div');
     dot.className = 'overlap-dot';
-    // Brighter for higher overlap
-    const opacity = 0.5 + (overlap.count / 6) * 0.5;
-    dot.style.opacity = opacity;
     el.appendChild(dot);
   }
 }
@@ -608,7 +606,7 @@ function createBookSpine(book) {
   topBand.style.cssText = `position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(to bottom,rgba(255,255,255,0.06),transparent);border-radius:2px 1px 0 0;pointer-events:none;`;
   el.appendChild(topBand);
 
-  addOverlapDot(el, 'book', book);
+  addUniqueDot(el, 'book', book);
 
   el.addEventListener('click', (e) => { e.stopPropagation(); pinInfo('book', book, el); });
   el.addEventListener('mouseenter', () => { if (!pinnedSpine) showInfo('book', book); });
@@ -657,7 +655,7 @@ function createAlbumSpine(album) {
   gloss.style.cssText = `position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,0.07) 0%,transparent 40%,transparent 60%,rgba(0,0,0,0.05) 100%);pointer-events:none;border-radius:1px;`;
   el.appendChild(gloss);
 
-  addOverlapDot(el, 'album', album);
+  addUniqueDot(el, 'album', album);
 
   el.addEventListener('click', (e) => { e.stopPropagation(); pinInfo('album', album, el); });
   el.addEventListener('mouseenter', () => { if (!pinnedSpine) showInfo('album', album); });
@@ -781,7 +779,7 @@ function createDvdSpine(dvd) {
   gloss.style.cssText = `position:absolute;inset:0;background:linear-gradient(105deg,rgba(255,255,255,0.18) 0%,rgba(255,255,255,0.04) 30%,transparent 50%,rgba(0,0,0,0.04) 80%,rgba(0,0,0,0.08) 100%);pointer-events:none;border-radius:1px;`;
   el.appendChild(gloss);
 
-  addOverlapDot(el, 'dvd', dvd);
+  addUniqueDot(el, 'dvd', dvd);
 
   el.addEventListener('click', (e) => { e.stopPropagation(); pinInfo('dvd', dvd, el); });
   el.addEventListener('mouseenter', () => { if (!pinnedSpine) showInfo('dvd', dvd); });
@@ -808,8 +806,12 @@ function showInfo(type, item) {
   // Overlap info
   const overlap = getOverlap(type, item);
   const overlapEl = document.getElementById('info-overlap');
-  if (overlap.count >= 2) {
-    overlapEl.textContent = `Also on: ${overlap.models.filter(m => m !== currentModel).join(', ') || 'this shelf only'}`;
+  if (overlap.count === 1) {
+    overlapEl.textContent = 'Unique to this model';
+    overlapEl.style.display = '';
+  } else if (overlap.count >= 2) {
+    const others = overlap.models.filter(m => m !== currentModel).join(', ');
+    overlapEl.textContent = `Also on: ${others}`;
     overlapEl.style.display = '';
   } else {
     overlapEl.style.display = 'none';
@@ -885,7 +887,7 @@ const modelKeys = [...realModelKeys, 'consensus'];
 modelKeys.forEach(key => {
   const opt = document.createElement('option');
   opt.value = key;
-  opt.textContent = key === 'consensus' ? '\u2728 consensus (shared across 3+ models)' : key;
+  opt.textContent = key === 'consensus' ? '\u2728 consensus (shared across all models)' : key;
   select.appendChild(opt);
 });
 
